@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace LambdaTest.Sdk.Utils
 {
     public static class SmartUI
     {
-        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient HttpClient = new();
         private static readonly ILogger SdkUtilsLogger = Logger.CreateLogger("LambdaTest.Sdk.Utils");
 
         public static async Task<bool> IsSmartUIEnabled()
@@ -47,22 +46,24 @@ namespace LambdaTest.Sdk.Utils
             }
         }
 
-        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  object additionalParams = null)
+        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  object options = null)
         {
             try
             {     
-                var json = JsonSerializer.Serialize(new
+                object snapshotObject = new
                 {
-                    snapshot = new
-                    {
-                        dom = snapshot.Dom,
-                        name = snapshot.Name,
-                        url = snapshot.Url,
-                    },
+                    dom = snapshot.Dom,
+                    name = snapshot.Name,
+                    url = snapshot.Url
+                };
+
+                var jsonObject = new
+                {
+                    snapshot = options != null ? new { dom = snapshot.Dom, name = snapshot.Name, url = snapshot.Url, options } : snapshotObject,
                     testType = pkg
-                });
+                };
 
-
+                var json = JsonSerializer.Serialize(jsonObject);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
                 var response = await HttpClient.PostAsync($"{Constants.GetSmartUIServerAddress()}/snapshot", content);
                 response.EnsureSuccessStatusCode();
@@ -79,21 +80,6 @@ namespace LambdaTest.Sdk.Utils
                 SdkUtilsLogger.LogDebug($"post snapshot failed : {e.Message}");
                 throw new Exception("post snapshot failed", e);
             }
-        }
-        static Dictionary<string, object> CreateDictionary(string name, Dictionary<string, object> additionalParams)
-        {
-            var result = new Dictionary<string, object>
-            {
-                { "name", name }
-            };
-
-            // Add the additional parameters to the result dictionary
-            foreach (var kvp in additionalParams)
-            {
-                result[kvp.Key] = kvp.Value;
-            }
-
-            return result;
         }
         public class DomContent 
         {

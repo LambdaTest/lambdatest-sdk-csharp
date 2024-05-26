@@ -26,34 +26,40 @@ namespace LambdaTest.Selenium.Driver
 
             try
             {
-                var resp = await LambdaTest.Sdk.Utils.SmartUI.FetchDomSerializer();
+                var domSerializerResponse = await LambdaTest.Sdk.Utils.SmartUI.FetchDomSerializer();
 
-                var optionsSer = new JsonSerializerOptions
+                if (domSerializerResponse == null)
                 {
-                    PropertyNameCaseInsensitive = true
-                };
-                var responseObject = JsonSerializer.Deserialize<FetchDomSerializerResponse>(resp, optionsSer);
-
-                if (responseObject?.Data?.Dom == null)
-                {
-                    throw new Exception("Failed to fetch DOM serializer script.");
+                    throw new Exception("Failed to fetch DOM serializer script repsonse.");
                 }
 
-                string script = responseObject.Data.Dom;
+                var domSerializerScript = JsonSerializer.Deserialize<FetchDomSerializerResponse>(domSerializerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (domSerializerScript?.Data?.Dom == null)
+                {
+                    throw new Exception("Failed to json serialize the DOM serializer script.");
+                }
+
+                string script = domSerializerScript.Data.Dom;
 
                 ((IJavaScriptExecutor)driver).ExecuteScript(script);
 
-                var optionsJson = JsonSerializer.Serialize(options);
+                var optionsJSON = JsonSerializer.Serialize(options);
                 var snapshotScript = @"
-                    var options = " + optionsJson + @";
+                    var options = " + optionsJSON + @";
                     return JSON.stringify({
                         dom: SmartUIDOM.serialize(options),
                         url: document.URL
                     });";
 
-                var domJson = (string)((IJavaScriptExecutor)driver).ExecuteScript(snapshotScript);
+                var domJSON = (string)((IJavaScriptExecutor)driver).ExecuteScript(snapshotScript);
 
-                var domContent = JsonSerializer.Deserialize<DomDeserializerResponse>(domJson, optionsSer);
+                if (domJSON == null)
+                {
+                    throw new Exception("Failed to capture DOM object.");
+                }
+
+                var domContent = JsonSerializer.Deserialize<DomDeserializerResponse>(domJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (domContent == null)
                 {
@@ -73,13 +79,12 @@ namespace LambdaTest.Selenium.Driver
                     Url = domContent.Url
                 };
 
-                var resJson = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "lambdatest-selenium-driver", options);
-                SmartUILogger.LogInformation($"HERE IS RES_JSON: {resJson}");
-                var res = JsonSerializer.Deserialize<ApiResponse>(resJson);
+                var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON);
 
-                if (res?.Data?.Warnings != null && res.Data.Warnings.Count > 0)
+                if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                 {
-                    foreach (var warning in res.Data.Warnings)
+                    foreach (var warning in apiResponse.Data.Warnings)
                     {
                         SmartUILogger.LogWarning(warning);
                     }
