@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -46,20 +48,36 @@ namespace LambdaTest.Sdk.Utils
             }
         }
 
-        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  object options = null)
+        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  Dictionary<string, object>? options =null)
         {
             try
             {     
-                object snapshotObject = new
+                // object snapshotObject = new
+                // {
+                //     dom = snapshot.Dom,
+                //     name = snapshot.Name,
+                //     url = snapshot.Url
+                // };
+
+                // var jsonObject = new
+                // {
+                //     snapshot = options != null ? new { dom = snapshot.Dom, name = snapshot.Name, url = snapshot.Url, options } : snapshotObject,
+                //     testType = pkg
+                // };
+
+                // var json = JsonSerializer.Serialize(jsonObject);
+
+                var snapshotData = new SnapshotData
                 {
                     dom = snapshot.Dom,
                     name = snapshot.Name,
-                    url = snapshot.Url
+                    url = snapshot.Url,
+                    options = options ?? new Dictionary<string, object>() 
                 };
 
                 var jsonObject = new
                 {
-                    snapshot = options != null ? new { dom = snapshot.Dom, name = snapshot.Name, url = snapshot.Url, options } : snapshotObject,
+                    snapshot = snapshotData,
                     testType = pkg
                 };
 
@@ -94,6 +112,14 @@ namespace LambdaTest.Sdk.Utils
             public DomContent Dom { get; set; } = new DomContent();
             public string Url { get; set; } = string.Empty;
             public string Name { get; set; } = string.Empty;
+        }
+
+        public class SnapshotData
+        {
+            public DomContent? dom { get; set; }
+            public string? name { get; set; }
+            public string? url { get; set; }
+            public Dictionary<string, object>? options { get; set; } // Nullable for handling cases with or without options
         }
     }
 }
