@@ -52,20 +52,6 @@ namespace LambdaTest.Sdk.Utils
         {
             try
             {     
-                // object snapshotObject = new
-                // {
-                //     dom = snapshot.Dom,
-                //     name = snapshot.Name,
-                //     url = snapshot.Url
-                // };
-
-                // var jsonObject = new
-                // {
-                //     snapshot = options != null ? new { dom = snapshot.Dom, name = snapshot.Name, url = snapshot.Url, options } : snapshotObject,
-                //     testType = pkg
-                // };
-
-                // var json = JsonSerializer.Serialize(jsonObject);
 
                 var snapshotData = new SnapshotData
                 {
