@@ -27,8 +27,8 @@ LambdaTest.Selenium.Driver integrates seamlessly with Selenium WebDriver to capt
 To install the packages, use the .NET CLI:
 
 ```sh
-dotnet add package LambdaTest.Sdk.Utils --version 1.0.0
-dotnet add package LambdaTest.Selenium.Driver --version 1.0.0
+dotnet add package LambdaTest.Sdk.Utils --version 1.0.1
+dotnet add package LambdaTest.Selenium.Driver --version 1.0.1
 ```
 
 ## License 
