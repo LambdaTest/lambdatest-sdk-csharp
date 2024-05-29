@@ -36,15 +36,6 @@ jobs:
     - name: Build and publish LambdaTest.Selenium.Driver
       if: github.event.inputs.package-name == 'lambdatest-selenium-driver'
       run: |
-        # Build and pack LambdaTest.Sdk.Utils first
-        dotnet restore ./LambdaTest.Sdk.Utils
-        dotnet build ./LambdaTest.Sdk.Utils --configuration Release --no-restore
-        dotnet pack ./LambdaTest.Sdk.Utils --configuration Release --no-build --output ./LambdaTest.Sdk.Utils/nupkgs
-
-        # Install the locally built LambdaTest.Sdk.Utils package in LambdaTest.Selenium.Driver
-        dotnet add ./LambdaTest.Selenium.Driver package LambdaTest.Sdk.Utils --source ./LambdaTest.Sdk.Utils/nupkgs
-
-        # Build and pack LambdaTest.Selenium.Driver
         dotnet restore ./LambdaTest.Selenium.Driver
         dotnet build ./LambdaTest.Selenium.Driver --configuration Release --no-restore
         dotnet pack ./LambdaTest.Selenium.Driver --configuration Release --no-build --output ./LambdaTest.Selenium.Driver/nupkgs
