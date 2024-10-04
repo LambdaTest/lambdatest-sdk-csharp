@@ -12,7 +12,7 @@ namespace LambdaTest.Selenium.Driver
     {
          private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
-        public static async Task CaptureSnapshot(IWebDriver driver, string name, object? options = null)
+        public static async Task CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -80,7 +80,7 @@ namespace LambdaTest.Selenium.Driver
                 };
 
                 var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
-                var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON);
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                 {
@@ -106,6 +106,7 @@ namespace LambdaTest.Selenium.Driver
 
         private class ApiData
         {
+            public string Message { get; set; } = string.Empty;
             public List<string> Warnings { get; set; } = new List<string>();
         }
 
@@ -113,7 +114,6 @@ namespace LambdaTest.Selenium.Driver
         {
             public FetchDomSerializerData Data { get; set; } = new FetchDomSerializerData();
         }
-
         private class FetchDomSerializerData
         {
             public string Dom { get; set; } = string.Empty;
@@ -122,7 +122,7 @@ namespace LambdaTest.Selenium.Driver
         {
             public string html { get; set; } = string.Empty;
             public List<string> warnings { get; set; } = new List<string>();
-            public List<string> resources { get; set; } = new List<string>();
+            public List<LambdaTest.Sdk.Utils.SmartUI.Resource> resources { get; set; } = new List<LambdaTest.Sdk.Utils.SmartUI.Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
         private class DomDeserializerResponse 

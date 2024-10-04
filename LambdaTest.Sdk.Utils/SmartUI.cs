@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -46,20 +48,22 @@ namespace LambdaTest.Sdk.Utils
             }
         }
 
-        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  object options = null)
+        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  Dictionary<string, object>? options =null)
         {
             try
             {     
-                object snapshotObject = new
+
+                var snapshotData = new SnapshotData
                 {
                     dom = snapshot.Dom,
                     name = snapshot.Name,
-                    url = snapshot.Url
+                    url = snapshot.Url,
+                    options = options ?? new Dictionary<string, object>() 
                 };
 
                 var jsonObject = new
                 {
-                    snapshot = options != null ? new { dom = snapshot.Dom, name = snapshot.Name, url = snapshot.Url, options } : snapshotObject,
+                    snapshot = snapshotData,
                     testType = pkg
                 };
 
@@ -81,11 +85,18 @@ namespace LambdaTest.Sdk.Utils
                 throw new Exception("post snapshot failed", e);
             }
         }
+
+        public class Resource
+        {
+            public string content { get; set; } = string.Empty;
+            public string mimetype { get; set; } = string.Empty;
+            public string url { get; set; } = string.Empty;
+        }
         public class DomContent 
         {
             public string html { get; set; } = string.Empty;
             public List<string> warnings { get; set; } = new List<string>();
-            public List<string> resources { get; set; } = new List<string>();
+            public List<Resource> resources { get; set; } = new List<Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
 
@@ -94,6 +105,14 @@ namespace LambdaTest.Sdk.Utils
             public DomContent Dom { get; set; } = new DomContent();
             public string Url { get; set; } = string.Empty;
             public string Name { get; set; } = string.Empty;
+        }
+
+        public class SnapshotData
+        {
+            public DomContent? dom { get; set; }
+            public string? name { get; set; }
+            public string? url { get; set; }
+            public Dictionary<string, object>? options { get; set; } // Nullable for handling cases with or without options
         }
     }
 }

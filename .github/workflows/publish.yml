@@ -1,0 +1,42 @@
+name: Publish NuGet Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-name:
+        description: 'Package to Publish (utils/selenium)'
+        required: true
+        type: choice
+        options:
+          - lambdatest-sdk-utils
+          - lambdatest-selenium-driver
+        default: 'lambdatest-sdk-utils'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
+
+    - name: Build and publish LambdaTest.Sdk.Utils
+      if: github.event.inputs.package-name == 'lambdatest-sdk-utils'
+      run: |
+        dotnet restore ./LambdaTest.Sdk.Utils
+        dotnet build ./LambdaTest.Sdk.Utils --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Sdk.Utils --configuration Release --no-build --output ./LambdaTest.Sdk.Utils/nupkgs
+        dotnet nuget push ./LambdaTest.Sdk.Utils/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+    - name: Build and publish LambdaTest.Selenium.Driver
+      if: github.event.inputs.package-name == 'lambdatest-selenium-driver'
+      run: |
+        dotnet restore ./LambdaTest.Selenium.Driver
+        dotnet build ./LambdaTest.Selenium.Driver --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Selenium.Driver --configuration Release --no-build --output ./LambdaTest.Selenium.Driver/nupkgs
+        dotnet nuget push ./LambdaTest.Selenium.Driver/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
