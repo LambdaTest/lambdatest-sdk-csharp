@@ -9,7 +9,7 @@ namespace LambdaTest.Sdk.Utils
             var address = Environment.GetEnvironmentVariable("SMARTUI_SERVER_ADDRESS");
             if (string.IsNullOrEmpty(address))
             {
-                throw new Exception("SmartUI server address not found");
+                return "http://localhost:49152";
             }
             return address;
         }
