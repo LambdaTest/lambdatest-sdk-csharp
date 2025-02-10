@@ -10,7 +10,7 @@ namespace LambdaTest.Selenium.Driver
 {
     public static class SmartUISnapshot
     {
-         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
+        private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
         public static async Task CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
         {
@@ -43,6 +43,18 @@ namespace LambdaTest.Selenium.Driver
                 string script = domSerializerScript.Data.Dom;
 
                 ((IJavaScriptExecutor)driver).ExecuteScript(script);
+
+                // Extract sessionId from driver
+                string sessionId = (driver as IRemoteWebDriver)?.SessionId.ToString();
+                if (!string.IsNullOrEmpty(sessionId))
+                {
+                    // Append sessionId to options
+                    if (options == null)
+                    {
+                        options = new Dictionary<string, object>();
+                    }
+                    options["sessionId"] = sessionId;
+                }
 
                 var optionsJSON = JsonSerializer.Serialize(options);
                 var snapshotScript = @"
