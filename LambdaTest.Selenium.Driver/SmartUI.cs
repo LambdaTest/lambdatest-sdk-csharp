@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote; // Add this for RemoteWebDriver
+using OpenQA.Selenium.Remote;
 using LambdaTest.Sdk.Utils;
 
 namespace LambdaTest.Selenium.Driver
