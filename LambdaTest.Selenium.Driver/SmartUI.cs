@@ -126,7 +126,6 @@ namespace LambdaTest.Selenium.Driver
         {
             public FetchDomSerializerData Data { get; set; } = new FetchDomSerializerData();
         }
-
         private class FetchDomSerializerData
         {
             public string Dom { get; set; } = string.Empty;
@@ -135,7 +134,7 @@ namespace LambdaTest.Selenium.Driver
         {
             public string html { get; set; } = string.Empty;
             public List<string> warnings { get; set; } = new List<string>();
-            public List<string> resources { get; set; } = new List<string>();
+            public List<LambdaTest.Sdk.Utils.SmartUI.Resource> resources { get; set; } = new List<LambdaTest.Sdk.Utils.SmartUI.Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
         private class DomDeserializerResponse 

@@ -85,11 +85,18 @@ namespace LambdaTest.Sdk.Utils
                 throw new Exception("post snapshot failed", e);
             }
         }
+
+        public class Resource
+        {
+            public string content { get; set; } = string.Empty;
+            public string mimetype { get; set; } = string.Empty;
+            public string url { get; set; } = string.Empty;
+        }
         public class DomContent 
         {
             public string html { get; set; } = string.Empty;
             public List<string> warnings { get; set; } = new List<string>();
-            public List<string> resources { get; set; } = new List<string>();
+            public List<Resource> resources { get; set; } = new List<Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
 
