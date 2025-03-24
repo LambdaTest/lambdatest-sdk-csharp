@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>LambdaTest.Selenium.Driver</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Lambdatest-SmartUI</Authors>
     <Company>LambdaTest</Company>
     <Description>LambdaTest C# Selenium SDK </Description>
