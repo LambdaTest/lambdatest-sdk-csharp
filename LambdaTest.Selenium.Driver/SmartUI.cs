@@ -10,7 +10,7 @@ namespace LambdaTest.Selenium.Driver
 {
     public static class SmartUISnapshot
     {
-         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
+        private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
         public static async Task CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
         {
@@ -43,6 +43,18 @@ namespace LambdaTest.Selenium.Driver
                 string script = domSerializerScript.Data.Dom;
 
                 ((IJavaScriptExecutor)driver).ExecuteScript(script);
+
+                // Extract sessionId from driver
+                string sessionId = (driver as IRemoteWebDriver)?.SessionId.ToString();
+                if (!string.IsNullOrEmpty(sessionId))
+                {
+                    // Append sessionId to options
+                    if (options == null)
+                    {
+                        options = new Dictionary<string, object>();
+                    }
+                    options["sessionId"] = sessionId;
+                }
 
                 var optionsJSON = JsonSerializer.Serialize(options);
                 var snapshotScript = @"
@@ -114,7 +126,6 @@ namespace LambdaTest.Selenium.Driver
         {
             public FetchDomSerializerData Data { get; set; } = new FetchDomSerializerData();
         }
-
         private class FetchDomSerializerData
         {
             public string Dom { get; set; } = string.Empty;
@@ -123,7 +134,7 @@ namespace LambdaTest.Selenium.Driver
         {
             public string html { get; set; } = string.Empty;
             public List<string> warnings { get; set; } = new List<string>();
-            public List<string> resources { get; set; } = new List<string>();
+            public List<LambdaTest.Sdk.Utils.SmartUI.Resource> resources { get; set; } = new List<LambdaTest.Sdk.Utils.SmartUI.Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
         private class DomDeserializerResponse 
