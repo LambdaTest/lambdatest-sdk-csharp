@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 using LambdaTest.Sdk.Utils;
 
 namespace LambdaTest.Selenium.Driver
@@ -45,7 +46,12 @@ namespace LambdaTest.Selenium.Driver
                 ((IJavaScriptExecutor)driver).ExecuteScript(script);
 
                 // Extract sessionId from driver
-                string sessionId = (driver as IRemoteWebDriver)?.SessionId.ToString();
+                string sessionId = null;
+                if (driver is RemoteWebDriver remoteDriver)
+                {
+                    sessionId = remoteDriver.SessionId.ToString();
+                }
+                
                 if (!string.IsNullOrEmpty(sessionId))
                 {
                     // Append sessionId to options
@@ -141,7 +147,6 @@ namespace LambdaTest.Selenium.Driver
         {
             public DomJSONContent Dom { get; set; } = new DomJSONContent();
             public string Url { get; set; } = string.Empty;
-
         }
     }
 }
