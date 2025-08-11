@@ -3,7 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LambdaTest.Playwright.Driver\LambdaTest.Playwright.Driver.csproj" />
     <ProjectReference Include="..\LambdaTest.Sdk.Utils\LambdaTest.Sdk.Utils.csproj"/>
-    <PackageReference Include="Microsoft.Playwright" Version="1.54.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
   </ItemGroup>
 
   <PropertyGroup>
