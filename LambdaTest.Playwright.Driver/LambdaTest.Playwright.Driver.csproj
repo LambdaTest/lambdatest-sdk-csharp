@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>LambdaTest.Playwright.Driver</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Lambdatest-SmartUI</Authors>
+    <Company>LambdaTest</Company>
+    <Description>LambdaTest C# Playwright SDK with SmartUI support</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="LambdaTest.Sdk.Utils" Version="1.0.3" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+  </ItemGroup>
+</Project>
