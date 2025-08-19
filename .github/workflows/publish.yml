@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       package-name:
-        description: 'Package to Publish (utils/selenium)'
+        description: 'Package to Publish (utils/selenium/playwright)'
         required: true
         type: choice
         options:
           - lambdatest-sdk-utils
           - lambdatest-selenium-driver
+          - lambdatest-playwright-driver
         default: 'lambdatest-sdk-utils'
 
 jobs:
@@ -40,3 +41,11 @@ jobs:
         dotnet build ./LambdaTest.Selenium.Driver --configuration Release --no-restore
         dotnet pack ./LambdaTest.Selenium.Driver --configuration Release --no-build --output ./LambdaTest.Selenium.Driver/nupkgs
         dotnet nuget push ./LambdaTest.Selenium.Driver/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+    - name: Build and publish LambdaTest.Playwright.Driver
+      if: github.event.inputs.package-name == 'lambdatest-playwright-driver'
+      run: |
+        dotnet restore ./LambdaTest.Playwright.Driver
+        dotnet build ./LambdaTest.Playwright.Driver --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Playwright.Driver --configuration Release --no-build --output ./LambdaTest.Playwright.Driver/nupkgs
+        dotnet nuget push ./LambdaTest.Playwright.Driver/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
