@@ -11,7 +11,6 @@ namespace LambdaTest.Playwright.Driver
     public static class SmartUISnapshot
     {
         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Playwright.Driver");
-
         public static async Task CaptureSnapshot(IPage page, string name, Dictionary<string, object>? options = null)
         {
             if (string.IsNullOrEmpty(name))
@@ -39,6 +38,31 @@ namespace LambdaTest.Playwright.Driver
 
                 string script = domSerializerScript.Data.Dom;
 
+                if (options == null)
+                {
+                    options = new Dictionary<string, object>();
+                }
+
+                // Get test details from LambdaTestHook to extract the test ID
+                string sessionId = "";
+                try
+                {
+                    var testDetailsResponse = await page.EvaluateAsync<string>("_ => {}", "lambdatest_action: {\"action\": \"getTestDetails\"}");
+                    if (!string.IsNullOrEmpty(testDetailsResponse))
+                    {
+                        var testDetails = JsonSerializer.Deserialize<TestDetailsResponse>(testDetailsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        sessionId = testDetails?.Data?.SessionId ?? $"playwright_{Guid.NewGuid():N}";
+                    }
+                }
+                catch (Exception)
+                {
+                    SmartUILogger.LogError("Failed to get test details from LambdaTestHook.");
+                }
+                if (!string.IsNullOrEmpty(sessionId))
+                {   
+                    // Append sessionId to options
+                    options["sessionId"] = sessionId;
+                }
                 // Execute the DOM serializer script in the page context
                 await page.EvaluateAsync(script);
                 var optionsJSON = JsonSerializer.Serialize(options);
@@ -77,7 +101,7 @@ namespace LambdaTest.Playwright.Driver
                     Url = domContent.Url
                 };
 
-                var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Playwright.Driver", options);
+                var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "lambdatest-csharp-playwright-driver", options);
                 var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
@@ -159,6 +183,21 @@ namespace LambdaTest.Playwright.Driver
         {
             public DomJSONContent Dom { get; set; } = new DomJSONContent();
             public string Url { get; set; } = string.Empty;
+        }
+        
+        private class TestDetailsResponse
+        {
+            [System.Text.Json.Serialization.JsonPropertyName("data")]
+            public TestDetailsData Data { get; set; } = new TestDetailsData();
+        }
+        
+        private class TestDetailsData
+        {
+            [System.Text.Json.Serialization.JsonPropertyName("test_id")]
+            public string TestId { get; set; } = string.Empty;
+
+            [System.Text.Json.Serialization.JsonPropertyName("session_id")]
+            public string SessionId { get; set; } = string.Empty;
         }
     }
 }
