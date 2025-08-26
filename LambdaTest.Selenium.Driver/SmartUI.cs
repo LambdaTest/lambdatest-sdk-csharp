@@ -118,7 +118,12 @@ namespace LambdaTest.Selenium.Driver
                     // Get Snapshot Status
                     var timeout=600;
                     if (options.ContainsKey("timeout")){
-                        timeout= (int)options["timeout"];
+                        var tempTimeout= (int)options["timeout"];
+                        if (tempTimeout<30||tempTimeout>900){
+                            SmartUILogger.LogWarning("Timeout value is out of range(30-900). Defaulting to 600 seconds.");
+                        }else{
+                            timeout=tempTimeout;
+                        }
                     }
                     var snapshotStatusJSON = await LambdaTest.Sdk.Utils.SmartUI.GetSnapshotStatus(contextId, timeout, name);
                     var snapshotStatus = JsonSerializer.Deserialize<ApiResponse>(snapshotStatusJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
