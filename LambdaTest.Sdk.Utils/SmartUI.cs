@@ -14,6 +14,7 @@ namespace LambdaTest.Sdk.Utils
         private static readonly HttpClient HttpClient = new();
         private static readonly ILogger SdkUtilsLogger = Logger.CreateLogger("LambdaTest.Sdk.Utils");
 
+
         public static async Task<bool> IsSmartUIEnabled()
         {
             try
@@ -83,6 +84,38 @@ namespace LambdaTest.Sdk.Utils
             {
                 SdkUtilsLogger.LogDebug($"post snapshot failed : {e.Message}");
                 throw new Exception("post snapshot failed", e);
+            }
+        }
+
+        public static async Task<string> GetSnapshotStatus(string contextId, int pollTimeout, string snapshotName)
+        {
+            try
+            {
+                var url = $"{Constants.GetSmartUIServerAddress()}/snapshot/status?contextId={contextId}&pollTimeout={pollTimeout}&snapshotName={snapshotName}";
+                
+                // Using statement ensures proper disposal of HttpClient
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromHours(4);
+
+                    var response = await client.GetAsync(url);
+                    
+                    // Ensure successful status code
+                    response.EnsureSuccessStatusCode();
+
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    return responseBody;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                SdkUtilsLogger.LogDebug($"Snapshot Status Error: {e.Message}");
+                throw new Exception("Snapshot Status Error", e);
+            }
+            catch (Exception e)
+            {
+                SdkUtilsLogger.LogDebug($"Get Snapshot Status failed: {e.Message}");
+                throw new Exception("Get Snapshot Status failed", e);
             }
         }
 
