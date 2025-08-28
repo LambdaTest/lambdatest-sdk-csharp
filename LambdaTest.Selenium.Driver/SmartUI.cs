@@ -13,7 +13,7 @@ namespace LambdaTest.Selenium.Driver
     {
         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
-        public static async Task CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
+        public static async Task<String> CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -31,7 +31,7 @@ namespace LambdaTest.Selenium.Driver
 
                 if (domSerializerResponse == null)
                 {
-                    throw new Exception("Failed to fetch DOM serializer script repsonse.");
+                    throw new Exception("Failed to fetch DOM serializer script response.");
                 }
 
                 var domSerializerScript = JsonSerializer.Deserialize<FetchDomSerializerResponse>(domSerializerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -46,22 +46,20 @@ namespace LambdaTest.Selenium.Driver
                 ((IJavaScriptExecutor)driver).ExecuteScript(script);
 
                 // Extract sessionId from driver
-                string sessionId = null;
+                string sessionId = "";
                 if (driver is RemoteWebDriver remoteDriver)
                 {
                     sessionId = remoteDriver.SessionId.ToString();
                 }
-                
+                if (options == null)
+                {
+                    options = new Dictionary<string, object>();
+                }
                 if (!string.IsNullOrEmpty(sessionId))
                 {
-                    // Append sessionId to options
-                    if (options == null)
-                    {
-                        options = new Dictionary<string, object>();
-                    }
                     options["sessionId"] = sessionId;
                 }
-
+                
                 var optionsJSON = JsonSerializer.Serialize(options);
                 var snapshotScript = @"
                     var options = " + optionsJSON + @";
@@ -97,25 +95,66 @@ namespace LambdaTest.Selenium.Driver
                     Url = domContent.Url
                 };
 
-                var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
-                var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
+                // Handle sync parameter if present
+                if (options?.ContainsKey("sync") == true && (bool)options["sync"])
                 {
-                    foreach (var warning in apiResponse.Data.Warnings)
-                    {
-                        SmartUILogger.LogWarning(warning);
-                    }
-                }
+                    var contextId = Guid.NewGuid().ToString();
+                    options["contextId"] = contextId;
 
-                SmartUILogger.LogInformation($"Snapshot captured: {name}");
+                    // Post Snapshot
+                    var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
+                    {
+                        foreach (var warning in apiResponse.Data.Warnings)
+                        {
+                            SmartUILogger.LogWarning(warning);
+                        }
+                    }
+
+                    SmartUILogger.LogInformation($"Snapshot captured: {name}");
+
+                    // Get Snapshot Status
+                    var timeout=600;
+                    if (options.ContainsKey("timeout")){
+                        var tempTimeout= (int)options["timeout"];
+                        if (tempTimeout<30||tempTimeout>900){
+                            SmartUILogger.LogWarning("Timeout value is out of range(30-900). Defaulting to 600 seconds.");
+                        }else{
+                            timeout=tempTimeout;
+                        }
+                    }
+                    var snapshotStatusJSON = await LambdaTest.Sdk.Utils.SmartUI.GetSnapshotStatus(contextId, timeout, name);
+                    var snapshotStatus = JsonSerializer.Deserialize<ApiResponse>(snapshotStatusJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return snapshotStatusJSON;
+                }
+                else
+                {
+                    // If sync is not true, simply post the snapshot
+                    var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
+                    {
+                        foreach (var warning in apiResponse.Data.Warnings)
+                        {
+                            SmartUILogger.LogWarning(warning);
+                        }
+                    }
+
+                    SmartUILogger.LogInformation($"Snapshot captured: {name}");
+                }
+                return "";
             }
             catch (Exception e)
             {
                 SmartUILogger.LogError($"SmartUI snapshot failed: {name}");
                 SmartUILogger.LogError(e.ToString());
+                return "";
             }
         }
+
 
         private class ApiResponse
         {
