@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -11,7 +9,7 @@ namespace LambdaTest.Sdk.Utils
 {
     public static class SmartUI
     {
-        private static readonly HttpClient HttpClient = new();
+        private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly ILogger SdkUtilsLogger = Logger.CreateLogger("LambdaTest.Sdk.Utils");
 
 
@@ -49,7 +47,7 @@ namespace LambdaTest.Sdk.Utils
             }
         }
 
-        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg,  Dictionary<string, object>? options =null)
+        public static async Task<string> PostSnapshot(DomObject snapshot, string pkg, Dictionary<string, object> options = null)
         {
             try
             {     
@@ -125,6 +123,7 @@ namespace LambdaTest.Sdk.Utils
             public string mimetype { get; set; } = string.Empty;
             public string url { get; set; } = string.Empty;
         }
+        
         public class DomContent 
         {
             public string html { get; set; } = string.Empty;
@@ -142,10 +141,10 @@ namespace LambdaTest.Sdk.Utils
 
         public class SnapshotData
         {
-            public DomContent? dom { get; set; }
-            public string? name { get; set; }
-            public string? url { get; set; }
-            public Dictionary<string, object>? options { get; set; } // Nullable for handling cases with or without options
+            public DomContent dom { get; set; }
+            public string name { get; set; }
+            public string url { get; set; }
+            public Dictionary<string, object> options { get; set; }
         }
     }
 }
