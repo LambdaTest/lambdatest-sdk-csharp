@@ -29,20 +29,40 @@ namespace LambdaTest.Sdk.Utils
                 return LogLevel.Debug;
             }
 
-            var logLevelStr = Environment.GetEnvironmentVariable("LT_SDK_LOG_LEVEL")?.ToLower() ?? "info";
-            return logLevelStr switch
+            var logLevelStr = Environment.GetEnvironmentVariable("LT_SDK_LOG_LEVEL");
+            if (string.IsNullOrEmpty(logLevelStr))
             {
-                "debug" => LogLevel.Debug,
-                "warning" => LogLevel.Warning,
-                "error" => LogLevel.Error,
-                "critical" => LogLevel.Critical,
-                _ => LogLevel.Information,
-            };
+                logLevelStr = "info";
+            }
+            else
+            {
+                logLevelStr = logLevelStr.ToLower();
+            }
+
+            switch (logLevelStr)
+            {
+                case "debug":
+                    return LogLevel.Debug;
+                case "warning":
+                    return LogLevel.Warning;
+                case "error":
+                    return LogLevel.Error;
+                case "critical":
+                    return LogLevel.Critical;
+                default:
+                    return LogLevel.Information;
+            }
         }
 
         public static ILogger CreateLogger(string packageName)
         {
             Initialize();
+            
+            if (loggerFactory == null)
+            {
+                throw new InvalidOperationException("Logger factory failed to initialize");
+            }
+            
             return loggerFactory.CreateLogger(packageName);
         }
     }

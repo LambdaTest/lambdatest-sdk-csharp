@@ -13,7 +13,7 @@ namespace LambdaTest.Selenium.Driver
     {
         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
-        public static async Task<String> CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object>? options = null)
+        public static async Task<String> CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object> options = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -36,7 +36,7 @@ namespace LambdaTest.Selenium.Driver
 
                 var domSerializerScript = JsonSerializer.Deserialize<FetchDomSerializerResponse>(domSerializerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                if (domSerializerScript?.Data?.Dom == null)
+                if (domSerializerScript == null || domSerializerScript.Data == null || domSerializerScript.Data.Dom == null)
                 {
                     throw new Exception("Failed to json serialize the DOM serializer script.");
                 }
@@ -96,7 +96,7 @@ namespace LambdaTest.Selenium.Driver
                 };
 
                 // Handle sync parameter if present
-                if (options?.ContainsKey("sync") == true && (bool)options["sync"])
+                if (options != null && options.ContainsKey("sync") && (bool)options["sync"])
                 {
                     var contextId = Guid.NewGuid().ToString();
                     options["contextId"] = contextId;
@@ -105,7 +105,7 @@ namespace LambdaTest.Selenium.Driver
                     var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
                     var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
+                    if (apiResponse != null && apiResponse.Data != null && apiResponse.Data.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                     {
                         foreach (var warning in apiResponse.Data.Warnings)
                         {
@@ -117,11 +117,15 @@ namespace LambdaTest.Selenium.Driver
 
                     // Get Snapshot Status
                     var timeout=600;
-                    if (options.ContainsKey("timeout")){
+                    if (options.ContainsKey("timeout"))
+                    {
                         var tempTimeout= (int)options["timeout"];
-                        if (tempTimeout<30||tempTimeout>900){
+                        if (tempTimeout<30||tempTimeout>900)
+                        {
                             SmartUILogger.LogWarning("Timeout value is out of range(30-900). Defaulting to 600 seconds.");
-                        }else{
+                        }
+                        else
+                        {
                             timeout=tempTimeout;
                         }
                     }
@@ -135,7 +139,7 @@ namespace LambdaTest.Selenium.Driver
                     var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
                     var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (apiResponse?.Data?.Warnings != null && apiResponse.Data.Warnings.Count > 0)
+                    if (apiResponse != null && apiResponse.Data != null && apiResponse.Data.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                     {
                         foreach (var warning in apiResponse.Data.Warnings)
                         {
