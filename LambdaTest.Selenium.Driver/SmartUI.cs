@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using LambdaTest.Sdk.Utils;
 
 namespace LambdaTest.Selenium.Driver
@@ -13,7 +11,7 @@ namespace LambdaTest.Selenium.Driver
     {
         private static readonly ILogger SmartUILogger = Logger.CreateLogger("Lambdatest.Selenium.Driver");
 
-        public static async Task<String> CaptureSnapshot(IWebDriver driver, string name, Dictionary<string, object> options = null)
+        public static async Task<String> CaptureSnapshot(dynamic driver, string name, Dictionary<string, object> options = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -43,14 +41,21 @@ namespace LambdaTest.Selenium.Driver
 
                 string script = domSerializerScript.Data.Dom;
 
-                ((IJavaScriptExecutor)driver).ExecuteScript(script);
+                // Execute script using dynamic driver
+                driver.ExecuteScript(script);
 
                 // Extract sessionId from driver
                 string sessionId = "";
-                if (driver is RemoteWebDriver remoteDriver)
+                try
                 {
-                    sessionId = remoteDriver.SessionId.ToString();
+                    sessionId = driver.SessionId?.ToString() ?? "";
                 }
+                catch
+                {
+                    // SessionId not available or accessible
+                    SmartUILogger.LogWarning("SessionId not available or accessible from driver.");
+                }
+
                 if (options == null)
                 {
                     options = new Dictionary<string, object>();
@@ -68,7 +73,8 @@ namespace LambdaTest.Selenium.Driver
                         url: document.URL
                     });";
 
-                var domJSON = (string)((IJavaScriptExecutor)driver).ExecuteScript(snapshotScript);
+                // Execute script and get DOM JSON using dynamic driver
+                var domJSON = (string)driver.ExecuteScript(snapshotScript);
 
                 if (domJSON == null)
                 {
@@ -116,17 +122,17 @@ namespace LambdaTest.Selenium.Driver
                     SmartUILogger.LogInformation($"Snapshot captured: {name}");
 
                     // Get Snapshot Status
-                    var timeout=600;
+                    var timeout = 600;
                     if (options.ContainsKey("timeout"))
                     {
-                        var tempTimeout= (int)options["timeout"];
-                        if (tempTimeout<30||tempTimeout>900)
+                        var tempTimeout = (int)options["timeout"];
+                        if (tempTimeout < 30 || tempTimeout > 900)
                         {
                             SmartUILogger.LogWarning("Timeout value is out of range(30-900). Defaulting to 600 seconds.");
                         }
                         else
                         {
-                            timeout=tempTimeout;
+                            timeout = tempTimeout;
                         }
                     }
                     var snapshotStatusJSON = await LambdaTest.Sdk.Utils.SmartUI.GetSnapshotStatus(contextId, timeout, name);

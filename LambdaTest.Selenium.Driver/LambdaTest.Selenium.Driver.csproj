@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
     <PackageId>LambdaTest.Selenium.Driver</PackageId>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <Authors>Lambdatest-SmartUI</Authors>
     <Company>LambdaTest</Company>
     <Description>LambdaTest C# Selenium SDK</Description>
@@ -13,10 +13,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Selenium.Support" Version="4.21.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
