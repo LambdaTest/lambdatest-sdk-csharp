@@ -53,6 +53,7 @@ namespace LambdaTest.Selenium.Driver
                 catch
                 {
                     // SessionId not available or accessible
+                    SmartUILogger.LogWarning("SessionId not available or accessible from driver.");
                 }
 
                 if (options == null)
