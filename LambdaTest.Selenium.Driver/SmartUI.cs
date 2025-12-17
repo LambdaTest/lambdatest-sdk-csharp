@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using LambdaTest.Sdk.Utils;
+using Newtonsoft.Json;
 
 namespace LambdaTest.Selenium.Driver
 {
@@ -32,7 +32,7 @@ namespace LambdaTest.Selenium.Driver
                     throw new Exception("Failed to fetch DOM serializer script response.");
                 }
 
-                var domSerializerScript = JsonSerializer.Deserialize<FetchDomSerializerResponse>(domSerializerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var domSerializerScript = JsonConvert.DeserializeObject<FetchDomSerializerResponse>(domSerializerResponse);
 
                 if (domSerializerScript == null || domSerializerScript.Data == null || domSerializerScript.Data.Dom == null)
                 {
@@ -65,7 +65,8 @@ namespace LambdaTest.Selenium.Driver
                     options["sessionId"] = sessionId;
                 }
                 
-                var optionsJSON = JsonSerializer.Serialize(options);
+                var optionsJSON = JsonConvert.SerializeObject(options);
+                
                 var snapshotScript = @"
                     var options = " + optionsJSON + @";
                     return JSON.stringify({
@@ -81,7 +82,7 @@ namespace LambdaTest.Selenium.Driver
                     throw new Exception("Failed to capture DOM object.");
                 }
 
-                var domContent = JsonSerializer.Deserialize<DomDeserializerResponse>(domJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var domContent = JsonConvert.DeserializeObject<DomDeserializerResponse>(domJSON);
 
                 if (domContent == null)
                 {
@@ -109,7 +110,7 @@ namespace LambdaTest.Selenium.Driver
 
                     // Post Snapshot
                     var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
-                    var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(apiResponseJSON);
 
                     if (apiResponse != null && apiResponse.Data != null && apiResponse.Data.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                     {
@@ -136,14 +137,14 @@ namespace LambdaTest.Selenium.Driver
                         }
                     }
                     var snapshotStatusJSON = await LambdaTest.Sdk.Utils.SmartUI.GetSnapshotStatus(contextId, timeout, name);
-                    var snapshotStatus = JsonSerializer.Deserialize<ApiResponse>(snapshotStatusJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var snapshotStatus = JsonConvert.DeserializeObject<ApiResponse>(snapshotStatusJSON);
                     return snapshotStatusJSON;
                 }
                 else
                 {
                     // If sync is not true, simply post the snapshot
                     var apiResponseJSON = await LambdaTest.Sdk.Utils.SmartUI.PostSnapshot(dom, "Lambdatest.Selenium.Driver", options);
-                    var apiResponse = JsonSerializer.Deserialize<ApiResponse>(apiResponseJSON, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(apiResponseJSON);
 
                     if (apiResponse != null && apiResponse.Data != null && apiResponse.Data.Warnings != null && apiResponse.Data.Warnings.Count > 0)
                     {
@@ -181,10 +182,12 @@ namespace LambdaTest.Selenium.Driver
         {
             public FetchDomSerializerData Data { get; set; } = new FetchDomSerializerData();
         }
+        
         private class FetchDomSerializerData
         {
             public string Dom { get; set; } = string.Empty;
         }
+        
         private class DomJSONContent
         {
             public string html { get; set; } = string.Empty;
@@ -192,6 +195,7 @@ namespace LambdaTest.Selenium.Driver
             public List<LambdaTest.Sdk.Utils.SmartUI.Resource> resources { get; set; } = new List<LambdaTest.Sdk.Utils.SmartUI.Resource>();
             public List<string> hints { get; set; } = new List<string>();
         }
+        
         private class DomDeserializerResponse 
         {
             public DomJSONContent Dom { get; set; } = new DomJSONContent();
