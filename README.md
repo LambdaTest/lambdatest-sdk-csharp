@@ -18,8 +18,8 @@ With TestMu AI (Formerly LambdaTest), you can run C# Selenium and Playwright tes
 ### Prerequisites
 
 1. .NET SDK (6.0 or higher) installed.
-2. A TestMu AI account — [sign up here](https://www.testmuai.com/register/).
-3. Your TestMu AI Username and Access Key from the [Automation Dashboard](https://automation.testmuai.com/).
+2. A TestMu AI account — sign up here.
+3. Your TestMu AI Username and Access Key from the Automation Dashboard.
 
 ### Setup
 
