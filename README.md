@@ -1,8 +1,8 @@
-﻿# Run C# Tests on TestMu AI (Formerly LambdaTest)
+# C# SDK for TestMu AI (Formerly LambdaTest)
 
 <p align="center">
   <a href="https://www.testmuai.com/"><img src="https://img.shields.io/badge/MADE%20BY%20TestMu%20AI-000000.svg?style=for-the-badge&labelColor=000" alt="Made by TestMu AI"></a>
-  <a href="https://www.nuget.org/packages/LambdaTest.Sdk.Utils"><img src="https://img.shields.io/nuget/v/LambdaTest.Sdk.Utils?style=for-the-badge&logo=nuget&labelColor=000" alt="NuGet version"></a>
+  <a href="https://www.nuget.org/packages/LambdaTest.Sdk.Utils"><img src="https://img.shields.io/nuget/v/LambdaTest.Sdk.Utils.svg?style=for-the-badge&labelColor=000000" alt="NuGet version"></a>
   <a href="https://community.testmuai.com/"><img src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&labelColor=000000" alt="Community"></a>
 </p>
 
@@ -10,10 +10,10 @@
 
 [TestMu AI](https://www.testmuai.com/) (Formerly LambdaTest) is the world's first full-stack AI Agentic Quality Engineering platform that empowers teams to test intelligently, smarter, and ship faster. Built for scale, it offers a full-stack testing cloud with 10K+ real devices and 3,000+ browsers. With AI-native test management, MCP servers, and agent-based automation, TestMu AI supports Selenium, Appium, Playwright, and all major frameworks. 
 
-With TestMu AI (Formerly LambdaTest), you can run C# Selenium and Playwright tests across real browsers and operating systems. This sample shows how to configure the TestMu AI (Formerly LambdaTest) C# SDK to run SmartUI visual regression tests on the TestMu AI cloud.
+With TestMu AI (Formerly LambdaTest), you can integrate the C# SDK to run Selenium and Playwright tests with SmartUI visual regression across real browsers and operating systems.
 
-- [Sign up on TestMu AI](https://www.testmuai.com/register/) (Formerly LambdaTest).
-- Follow the [TestMu AI Documentation](https://www.testmuai.com/support/docs/) for the full setup walkthrough.
+- Sign up on TestMu AI (Formerly LambdaTest).
+- Follow the TestMu AI Documentation for the full setup walkthrough.
 
 ### Prerequisites
 
@@ -106,7 +106,7 @@ var capabilities = new Dictionary<string, object>
 
 ## Contributions
 
-Contributions are welcome. Open an issue to discuss your idea before submitting a pull request. When reporting bugs, include your Node.js version, OS, and Angular CLI version.
+Contributions are welcome. Open an issue to discuss your idea before submitting a pull request. When reporting bugs, include your .NET SDK version, OS, and project configuration.
 
 ## TestMu AI (Formerly LambdaTest) Community
 
