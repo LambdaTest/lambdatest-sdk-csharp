@@ -1,41 +1,38 @@
-# LambdaTest C# SDK
+﻿# Run C# Tests on TestMu AI (Formerly LambdaTest)
 
-## Overview
+<p align="center">
+  <a href="https://www.testmuai.com/"><img src="https://img.shields.io/badge/MADE%20BY%20TestMu%20AI-000000.svg?style=for-the-badge&labelColor=000" alt="Made by TestMu AI"></a>
+  <a href="https://www.nuget.org/packages/LambdaTest.Sdk.Utils"><img src="https://img.shields.io/nuget/v/LambdaTest.Sdk.Utils?style=for-the-badge&logo=nuget&labelColor=000" alt="NuGet version"></a>
+  <a href="https://community.testmuai.com/"><img src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&labelColor=000000" alt="Community"></a>
+</p>
 
-The LambdaTest C# SDK provides a set of utilities and integrations for working with LambdaTest's SmartUI and Selenium & Playwright services. This SDK is designed to streamline the process of capturing and analyzing SmartUI snapshots using various testing frameworks.
+## Getting Started
 
-## Packages
+[TestMu AI](https://www.testmuai.com/) (Formerly LambdaTest) is the world's first full-stack AI Agentic Quality Engineering platform that empowers teams to test intelligently, smarter, and ship faster. Built for scale, it offers a full-stack testing cloud with 10K+ real devices and 3,000+ browsers. With AI-native test management, MCP servers, and agent-based automation, TestMu AI supports Selenium, Appium, Playwright, and all major frameworks. 
 
-### LambdaTest.Sdk.Utils
+With TestMu AI (Formerly LambdaTest), you can run C# Selenium and Playwright tests across real browsers and operating systems. This sample shows how to configure the LambdaTest C# SDK to run SmartUI visual regression tests on the TestMu AI cloud.
 
-LambdaTest.Sdk.Utils is a utility library that offers core functionalities for the LambdaTest SmartUI CLI. It includes:
+- [Sign up on TestMu AI](https://www.testmuai.com/register/) (Formerly LambdaTest).
+- Follow the [TestMu AI Documentation](https://www.testmuai.com/support/docs/) for the full setup walkthrough.
 
-- Environment-based logging
-- SmartUI server health check
-- DOM serializer fetching
-- SmartUI snapshot posting
+### Prerequisites
 
-### LambdaTest.Selenium.Driver
+1. .NET SDK (6.0 or higher) installed.
+2. A TestMu AI account — [sign up here](https://www.testmuai.com/register/).
+3. Your TestMu AI Username and Access Key from the [Automation Dashboard](https://automation.testmuai.com/).
 
-LambdaTest.Selenium.Driver integrates seamlessly with Selenium WebDriver to capture SmartUI snapshots. It utilizes LambdaTest.Sdk.Utils for core functionalities, providing:
+### Setup
 
-- SmartUI snapshot capture using Selenium WebDriver
-- Integration with LambdaTest SmartUI CLI
-- Support for RemoteWebDriver and local WebDriver instances
+Clone the repository:
 
-### LambdaTest.Playwright.Driver
+```bash
+git clone https://github.com/LambdaTest/lambdatest-sdk-csharp
+cd lambdatest-sdk-csharp
+```
 
-LambdaTest.Playwright.Driver provides Playwright integration with LambdaTest SmartUI for capturing visual snapshots during automated testing. Features include:
+Install the SDK packages via .NET CLI:
 
-- SmartUI snapshot capture using Playwright
-- Multi-level support (Page, BrowserContext, Browser)
-- Cross-browser support (Chromium, Firefox, WebKit)
-
-## Installation
-
-To install the packages, use the .NET CLI:
-
-```sh
+```bash
 # Core utilities
 dotnet add package LambdaTest.Sdk.Utils --version 1.0.3
 
@@ -46,9 +43,25 @@ dotnet add package LambdaTest.Selenium.Driver --version 1.0.3
 dotnet add package LambdaTest.Playwright.Driver --version 1.0.0
 ```
 
-## Quick Start
+Set your TestMu AI credentials as environment variables:
 
-### Selenium Example
+- For Linux/macOS:
+
+```bash
+export LT_USERNAME="YOUR_USERNAME"
+export LT_ACCESS_KEY="YOUR_ACCESS_KEY"
+```
+
+- For Windows:
+
+```bash
+set LT_USERNAME="YOUR_USERNAME"
+set LT_ACCESS_KEY="YOUR_ACCESS_KEY"
+```
+
+### Run tests
+
+**Selenium Example:**
 
 ```csharp
 using OpenQA.Selenium;
@@ -60,7 +73,7 @@ driver.Navigate().GoToUrl("https://example.com");
 await SmartUISnapshot.CaptureSnapshot(driver, "my-snapshot");
 ```
 
-### Playwright Example
+**Playwright Example:**
 
 ```csharp
 using Microsoft.Playwright;
@@ -74,19 +87,62 @@ await page.GotoAsync("https://example.com");
 await SmartUISnapshot.CaptureSnapshot(page, "my-snapshot");
 ```
 
-## License 
+### Local testing with TestMu AI Tunnel
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+To test locally hosted apps, set up the TestMu AI tunnel. OS-specific guides:
 
+- [Local Testing on Windows](https://www.testmuai.com/support/docs/local-testing-for-windows/)
+- [Local Testing on macOS](https://www.testmuai.com/support/docs/local-testing-for-macos/)
+- [Local Testing on Linux](https://www.testmuai.com/support/docs/local-testing-for-linux/)
 
+Configure tunnel in your test capabilities:
 
+```csharp
+var capabilities = new Dictionary<string, object>
+{
+    { "tunnel", true }
+};
+```
 
+## Contributions
 
+Contributions are welcome. Open an issue to discuss your idea before submitting a pull request. When reporting bugs, include your Node.js version, OS, and Angular CLI version.
 
+## TestMu AI (Formerly LambdaTest) Community
 
+Connect with testers and developers in the [TestMu AI Community](https://community.testmuai.com/). Ask questions, share what you are building, and discuss best practices in test automation and DevOps.
+  
+## TestMu AI (Formerly LambdaTest) Certifications
 
+Earn free [TestMu AI Certifications](https://www.testmuai.com/certifications/) for testers, developers, and QA engineers. Validate your skills in Selenium, Cypress, Playwright, Appium, Espresso and more. Industry-recognized, shareable on LinkedIn, and built by practitioners, not marketers.
 
+## Learning Resources by TestMu AI (Formerly LambdaTest)
 
+Learn modern testing through tutorials, guides, videos, and weekly updates:
 
+* [TestMu AI Blog](https://www.testmuai.com/blog/)
+* [TestMu AI Learning Hub](https://www.testmuai.com/learning-hub/)
+* [TestMu AI on YouTube](https://www.youtube.com/@TestMuAI)
+* [TestMu AI Newsletter](https://www.testmuai.com/newsletter/)
+  
+## LambdaTest is Now TestMu AI
 
+On **January 12, 2026**, [LambdaTest evolved to TestMu AI](https://www.testmuai.com/lambdatest-is-now-testmuai/), the world's first fully autonomous **Agentic AI Quality Engineering Platform**.
 
+Same team. Same infrastructure. Same customer accounts. All existing LambdaTest logins, scripts, capabilities, and integrations continue to work without change.
+
+ð Find the new home for [LambdaTest](https://www.testmuai.com).
+
+### How LambdaTest Evolved into TestMu AI
+
+In 2017, we launched LambdaTest with a simple mission: make testing fast, reliable, and accessible. As LambdaTest grew, we expanded into Test Intelligence, Visual Regression Testing, Accessibility Testing, API Testing, and Performance Testing, covering the full depth of the testing lifecycle.
+
+As software development entered the AI era, testing had to evolve, too. We rebuilt the architecture to be AI-native from the ground up, with autonomous agents that **plan, author, execute, analyze, and optimize tests** while keeping humans in the loop. The platform integrates with your repos, CI, IDEs, and terminals, continuously learning from every code change and development signal.
+
+That evolution earned a new name: **TestMu AI**, built for an AI-first future of quality engineering. TestMu is not a new name for us. It is the name of our annual community conference, which has brought together 100,000+ quality engineers to discuss how AI would reshape testing, long before that became an industry norm. 
+
+What started as a high-performance cloud testing platform has transformed into an AI-native, multi-agent system powering a connected, end-to-end quality layer. That evolution defined a new identity: LambdaTest evolved into TestMu AI, built for an AI-first future of quality engineering.
+
+## Support
+
+Got a question? Email [support@testmuai.com](mailto:support@testmuai.com) or chat with us 24x7 from our chat portal.
