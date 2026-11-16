@@ -1,11 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
-    <PackageId>LambdaTest.Sdk.Utils</PackageId>
+    <PackageId>$(Brand).Sdk.Utils</PackageId>
     <Version>1.0.6</Version>
     <Authors>Lambdatest-SmartUI</Authors>
     <Company>LambdaTest</Company>
     <Description>LambdaTest SDK Utilities for SmartUI CLI in C#</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Brand)' == 'TestmuAI'">
+    <Authors>TestMu AI</Authors>
+    <Company>TestMu AI</Company>
+    <Description>TestMu AI (formerly LambdaTest) SDK utilities for the SmartUI CLI in C#. Same SDK as LambdaTest.Sdk.Utils.</Description>
   </PropertyGroup>
   
   <ItemGroup>

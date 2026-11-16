@@ -1,0 +1,24 @@
+<Project>
+  <!--
+    Brand switch for the NuGet packages.
+
+    By default (Brand=LambdaTest) the build produces the LambdaTest.* packages exactly as before.
+    Build with -p:Brand=TestmuAI to produce the same SDK as TestmuAI.* packages
+    (TestmuAI.Sdk.Utils, TestmuAI.Selenium.Driver, TestmuAI.Playwright.Driver).
+    Only package metadata changes; the code, assembly names and namespaces stay the same.
+  -->
+  <PropertyGroup>
+    <Brand Condition="'$(Brand)' == ''">LambdaTest</Brand>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Brand)' == 'TestmuAI'">
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://www.testmuai.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/LambdaTest/lambdatest-sdk-csharp</RepositoryUrl>
+    <PackageTags>testmu-ai;lambdatest;smartui;visual-testing;selenium;playwright</PackageTags>
+  </PropertyGroup>
+
+  <Target Name="CheckBrand" BeforeTargets="CollectPackageReferences;Build" Condition="'$(Brand)' != 'LambdaTest' and '$(Brand)' != 'TestmuAI'">
+    <Error Text="Unknown Brand '$(Brand)'. Use LambdaTest (default) or TestmuAI." />
+  </Target>
+</Project>
