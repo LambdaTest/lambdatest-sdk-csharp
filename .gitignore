@@ -57,6 +57,8 @@ StyleCopReport.xml
 
 # Files built by Visual Studio
 *.Build.*
+# Keep the brand switch for the NuGet packages (see Directory.Build.props)
+!Directory.Build.props
 *.config
 *.pdb
 *.cache

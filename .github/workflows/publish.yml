@@ -12,6 +12,14 @@ on:
           - lambdatest-selenium-driver
           - lambdatest-playwright-driver
         default: 'lambdatest-sdk-utils'
+      brand:
+        description: 'Package brand: LambdaTest.* or TestmuAI.* (same SDK). For TestmuAI, publish utils first.'
+        required: true
+        type: choice
+        options:
+          - LambdaTest
+          - TestmuAI
+        default: 'LambdaTest'
 
 jobs:
   build-and-publish:
@@ -29,23 +37,23 @@ jobs:
     - name: Build and publish LambdaTest.Sdk.Utils
       if: github.event.inputs.package-name == 'lambdatest-sdk-utils'
       run: |
-        dotnet restore ./LambdaTest.Sdk.Utils
-        dotnet build ./LambdaTest.Sdk.Utils --configuration Release --no-restore
-        dotnet pack ./LambdaTest.Sdk.Utils --configuration Release --no-build --output ./LambdaTest.Sdk.Utils/nupkgs
+        dotnet restore ./LambdaTest.Sdk.Utils -p:Brand=${{ github.event.inputs.brand }}
+        dotnet build ./LambdaTest.Sdk.Utils -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Sdk.Utils -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-build --output ./LambdaTest.Sdk.Utils/nupkgs
         dotnet nuget push ./LambdaTest.Sdk.Utils/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
 
     - name: Build and publish LambdaTest.Selenium.Driver
       if: github.event.inputs.package-name == 'lambdatest-selenium-driver'
       run: |
-        dotnet restore ./LambdaTest.Selenium.Driver
-        dotnet build ./LambdaTest.Selenium.Driver --configuration Release --no-restore
-        dotnet pack ./LambdaTest.Selenium.Driver --configuration Release --no-build --output ./LambdaTest.Selenium.Driver/nupkgs
+        dotnet restore ./LambdaTest.Selenium.Driver -p:Brand=${{ github.event.inputs.brand }}
+        dotnet build ./LambdaTest.Selenium.Driver -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Selenium.Driver -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-build --output ./LambdaTest.Selenium.Driver/nupkgs
         dotnet nuget push ./LambdaTest.Selenium.Driver/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
 
     - name: Build and publish LambdaTest.Playwright.Driver
       if: github.event.inputs.package-name == 'lambdatest-playwright-driver'
       run: |
-        dotnet restore ./LambdaTest.Playwright.Driver
-        dotnet build ./LambdaTest.Playwright.Driver --configuration Release --no-restore
-        dotnet pack ./LambdaTest.Playwright.Driver --configuration Release --no-build --output ./LambdaTest.Playwright.Driver/nupkgs
+        dotnet restore ./LambdaTest.Playwright.Driver -p:Brand=${{ github.event.inputs.brand }}
+        dotnet build ./LambdaTest.Playwright.Driver -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-restore
+        dotnet pack ./LambdaTest.Playwright.Driver -p:Brand=${{ github.event.inputs.brand }} --configuration Release --no-build --output ./LambdaTest.Playwright.Driver/nupkgs
         dotnet nuget push ./LambdaTest.Playwright.Driver/nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

@@ -1,15 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
-    <PackageId>LambdaTest.Selenium.Driver</PackageId>
+    <PackageId>$(Brand).Selenium.Driver</PackageId>
     <Version>1.0.7</Version>
     <Authors>Lambdatest-SmartUI</Authors>
     <Company>LambdaTest</Company>
     <Description>LambdaTest C# Selenium SDK</Description>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Brand)' == 'TestmuAI'">
+    <Authors>TestMu AI</Authors>
+    <Company>TestMu AI</Company>
+    <Description>TestMu AI (formerly LambdaTest) C# Selenium SDK with SmartUI support. Same SDK as LambdaTest.Selenium.Driver.</Description>
+  </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="LambdaTest.Sdk.Utils" Version="1.0.6" />
+    <PackageReference Include="$(Brand).Sdk.Utils" Version="1.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
